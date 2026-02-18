@@ -1,0 +1,18 @@
+[project]
+name = "rag_gemini"
+version = "0.1.0"
+description = "App con RAG y API de ficheros con Gemini"
+readme = "README.md"
+#package-mode = false
+requires-python = ">=3.13,<4.0.0"
+dependencies = [
+    "google-genai>=1.50.1",
+    "chainlit>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "streamlit>=1.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.1.0",
+]

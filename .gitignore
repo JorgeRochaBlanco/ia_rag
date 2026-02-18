@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.venv/
+uv.lock
+.claude/
+*.pyc
+__pycache__
+
+# Chainlit auto-generated files
+.chainlit/
+chainlit.md
+
+# Files
+.files/
+
+# PDF files
+*.pdf
