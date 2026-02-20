@@ -8,14 +8,14 @@ from app.agent import FAQAgent
 load_dotenv()
 
 # Initializa agent
-#agent = FAQAgent()
+agent = FAQAgent()
 
 
 import streamlit as st
 import random
 import time
 
-st.title("Simple chat")
+st.title("Chat con IA para programas de investigación")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -27,13 +27,12 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Accept user input
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input("En qué te puedo ayudar?"):
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-
 
 # Streamed response emulator
 def response_generator():
@@ -50,7 +49,7 @@ def response_generator():
 
 # Display assistant response in chat message container
 with st.chat_message("assistant"):
-    response = st.write_stream(response_generator())
+    response = agent.chat(message.content)
 # Add assistant response to chat history
 st.session_state.messages.append({"role": "assistant", "content": response})
 
