@@ -49,7 +49,7 @@ def response_generator():
 
 # Display assistant response in chat message container
 with st.chat_message("assistant"):
-    response = agent.chat(message.content)
+    response = agent.chat(st.session_state.messages[-1])
 # Add assistant response to chat history
 st.session_state.messages.append({"role": "assistant", "content": response})
 
