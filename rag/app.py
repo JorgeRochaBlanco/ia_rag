@@ -15,11 +15,11 @@ async def start():
         cl.user_session.set("agent", agent)
 
         await cl.Message(
-            content="Hey! I'm the TechGear Plus support agent. How can I help you today?"
+            content="Hola, soy el agente para analizar convocatorias de investigación. ¿Cómo puedo ayudarte?"
         ).send()
     except ValueError as e:
         await cl.Message(
-            content=f"⚠️ Configuration Error: {e}\n\nPlease set the STORE_NAME environment variable."
+            content=f"⚠️ Error de configuración: {e}\n\nPor favor, especifica el nombre del Storage de Google"
         ).send()
 
 
@@ -30,7 +30,7 @@ async def main(message: cl.Message):
 
     if not agent:
         await cl.Message(
-            content="Agent not initialized. Please refresh the page."
+            content="Agente no inicializado. Por favor, refresca la página."
         ).send()
         return
 

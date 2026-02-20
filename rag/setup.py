@@ -21,25 +21,25 @@ def create_store(
 ) -> genai.types.FileSearchStore:
     """Create a file search store for organizing searchable documents."""
     store = client.file_search_stores.create(config={"display_name": display_name})
-    print(f"Created store: {store.name}")
+    print(f"Almacenamiento creado: {store.name}")
     return store
 
 
 def upload_documents(client: genai.Client, store_name: str, docs_path: Path) -> None:
     """Upload all PDF documents from the specified directory to the store."""
-    print("\nUploading documents...")
+    print("\nCargando documentos...")
     for file_path in docs_path.glob("*.pdf"):
         file = client.file_search_stores.upload_to_file_search_store(
             file=file_path,
             file_search_store_name=store_name,
             config={"display_name": file_path.name},
         )
-        print(f"Uploaded file: {file.name}")
+        print(f"Documento cargado: {file.name}")
 
 
 def search(client: genai.Client, store_name: str, query: str) -> str:
     """Query the store using Gemini with file search."""
-    print(f"\nSearching the store for: '{query}'...")
+    print(f"\nPreguntando en la base de conocimientos: '{query}'...")
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=query,
@@ -51,11 +51,11 @@ def search(client: genai.Client, store_name: str, query: str) -> str:
 
 def cleanup(client: genai.Client) -> None:
     """Delete all file search stores (force deletes documents and chunks too)."""
-    print("\nCleaning up resources...")
+    print("\nEliminando recursos previos...")
     for store in client.file_search_stores.list():
         client.file_search_stores.delete(name=store.name, config={"force": True})
-        print(f"Deleted store: {store.name}")
-    print("Cleanup complete.")
+        print(f"Almacenamiento eliminado: {store.name}")
+    print("Limpieza terminada.")
 
 
 if __name__ == "__main__":
