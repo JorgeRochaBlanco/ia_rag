@@ -1,5 +1,5 @@
 [project]
-name = "rag"
+name = "ia-rag"
 version = "0.1.0"
 description = "App con RAG y API de ficheros con Gemini"
 readme = "README.md"
