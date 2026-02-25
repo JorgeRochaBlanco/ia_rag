@@ -32,12 +32,6 @@ st.title("Limpieza y recarga de documentos al repositorio - " + repo)
 
 # Initialize client (requires GEMINI_API_KEY environment variable), creating new storage
 ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, ia_model=modelo_ia, create_store=True)
-
-#functions.cleanup(client)
-#store = functions.create_store(client, repo)
-#print("Store:")
-#print(store)
-
 st.write("Repositorio limpio y recreado")
 
 # Subimos ficheros al repo
@@ -67,10 +61,3 @@ for filename in os.listdir(tmp_ruta):
     if os.path.isfile(file_path):
         os.remove(file_path)  # Remove the file
         print(f"Deleted file: {filename}")
-
-
-# # Step 3: Query the documents
-# search(client, store.name, "Cuántas ayudas distintas para investigación tienes registradas en tu base de conocimiento? Cuéntalas y haz un listado de las mismas")
-
-# # Step 4: Clean up all stores
-# # cleanup(client)
