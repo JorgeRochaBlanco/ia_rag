@@ -13,6 +13,15 @@ def create_store(client: genai.Client, display_name: str) -> genai.types.FileSea
     return store
 
 
+def cleanup(client: genai.Client) -> None:
+    """Delete all file search stores (force deletes documents and chunks too)."""
+    print("\nEliminando recursos previos...")
+    for store in client.file_search_stores.list():
+        client.file_search_stores.delete(name=store.name, config={"force": True})
+        print(f"Almacenamiento eliminado: {store.name}")
+    print("Limpieza terminada.")
+
+
 def upload_documents(client: genai.Client, store_name: str, docs_path: Path) -> None:
     """Upload all PDF documents from the specified directory to the store."""
     print("\nCargando documentos...")
@@ -76,12 +85,3 @@ def search_stream(client: genai.Client, store_name: str, instructions: str, quer
         config={"tools": [{"file_search": {"file_search_store_names": [store_name]}}]}
     )
     return response_generator
-
-
-def cleanup(client: genai.Client) -> None:
-    """Delete all file search stores (force deletes documents and chunks too)."""
-    print("\nEliminando recursos previos...")
-    for store in client.file_search_stores.list():
-        client.file_search_stores.delete(name=store.name, config={"force": True})
-        print(f"Almacenamiento eliminado: {store.name}")
-    print("Limpieza terminada.")

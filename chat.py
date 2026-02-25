@@ -1,54 +1,39 @@
 from dotenv import load_dotenv
 import os
-from pathlib import Path
-from google import genai
 import streamlit as st
 
-from app import functions
+from app.agent_investigacion import InvestigationAgent
 
 
 # Load environment variables
 load_dotenv()
 
-SYSTEM_PROMPT = """
-Eres un agente para apoyar al personal de gestión de las investigaciones. 
-Solo estás preparado para responder preguntas que provengan de tu base de conocimientos.
-Si la respuesta no está en esa base de conocimientos, responde:
-
-Lo lamento, pero solo puedo contestar preguntas que estén en mi base de conocimiento.
-
-<reglas>
-- Devuelve respuestas directas (2 - 3 frases si es posible)
-- Usa bullets si la lista de respuestas es de 3+ elementos
-- Incluye fechas o cifras específicas cuando sea relevante
-- Sé correcto y amigable
-</reglas>
-"""
-
-repo = "BD Investigacion"
-
+#instrucciones para la IA, por si hay varias disponibles
+instructions_ia = InvestigationAgent.load_instructions(os.getenv("FICH_INSTRUCCIONES_IA"))
+#tomamos variables de entorno para configurar accesos a Storage e instrucciones para agente IA
+print("Modelo IA a usar:", end="\t")
+modelo_ia = os.getenv("IA_MODEL")
+print(modelo_ia)
 print("Nombre de Storage Google: ", end="\t")
 print(os.getenv("STORE_NAME"))
 print("API Key: ", end="\t")
 print(os.getenv("GEMINI_API_KEY"))
+print("Instrucciones para el agente:")
+print(instructions_ia)
+repo = os.getenv("DISPLAY_NAME")
+print("Repo display name: " + repo)
 
 
-# Funciones auiliares
-def get_txt_messages(messages):
-    return "".join([item["role"]+": "+(item["content"] if item["content"] else "")+"\n" for item in messages])
+# Inicializamos objeto para gestionar las interacciones con el agente de IA. No creamos el storage sino que lo recuperamos
+ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, ia_model=modelo_ia, create_store=False)
 
 
 # Initialize client (requires GEMINI_API_KEY environment variable)
-client = genai.Client()
+#client = genai.Client()
 # Recuperamos el storage
-store = None
-# for store_item in client.file_search_stores.list():
-#     disp_name = store_item.display_name
-#     name = store_item.name
-#     count_docs = store_item.active_documents_count
-#     print(f"Recuperado storage, display name {disp_name}, nombre {name} y {count_docs} documentos")
-store = functions.get_store(client=client, store_name=repo)  #por defecto tenemos un Store
-print(f"Recuperado storage, display name {store.display_name}, nombre {store.name} y {store.active_documents_count} documentos")
+#store = None
+#store = functions.get_store(client=client, store_name=repo)  #por defecto tenemos un Store
+#print(f"Recuperado storage, display name {store.display_name}, nombre {store.name} y {store.active_documents_count} documentos")
 
 
 
@@ -56,12 +41,18 @@ print(f"Recuperado storage, display name {store.display_name}, nombre {store.nam
 # Código Streamlit
 ###################################################################
 
-st.title("Chat aumentado por RAG")
+st.title("Chatbot con RAG para analizar programas de ayuda a la investigación")
 
 # Función para resetear el chat
 def reset_conversation():
   st.session_state.conversation = None
   st.session_state.chat_history = None
+  st.session_state.messages = []
+
+# Funciones para convertir a texto la cadena de preguntas y respuestas generadas en el chat
+def get_txt_messages(messages):
+    return "".join([item["role"]+": "+(item["content"] if item["content"] else "")+"\n" for item in messages])
+
 
 # Botón para resetear
 st.button('Vaciar Chat', on_click=reset_conversation)
@@ -90,7 +81,10 @@ with st.chat_message("assistant"):
     response = "En qué te puedo ayudar?"
     if len(st.session_state.messages) > 0:
         message_str = get_txt_messages(st.session_state.messages)
-        response = functions.search(client=client, store_name=store.name, instructions=SYSTEM_PROMPT, query=message_str)
+        print("Query para la IA:")
+        print(message_str)
+        response = ia_agent.chat(message_str)
+        #response = functions.search(client=client, store_name=store.name, instructions=SYSTEM_PROMPT, query=message_str)
         st.write(response)
     else:
         st.write(response)

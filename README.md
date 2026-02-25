@@ -1,75 +1,53 @@
 # Ejemplo funcional de uso de la API RAG con Gemini
 
-Un chatbot sencillo de atención al cliente construido con la API de búsqueda de archivos de Gemini.
+Un chatbot sencillo de asistencia al equipo de apoyo a los investigadores, construido con la API de búsqueda de archivos de Gemini.
 
-Este proyecto demuestra cómo construir un agente RAG (Generación Aumentada por Recuperación) que puede responder preguntas basándose en tu base de conocimiento documental.
+Este proyecto demuestra cómo construir un agente RAG (Generación Aumentada por Recuperación) que puede responder preguntas basándose en tu base de conocimiento documental, así como en un conjunto de instrucciones y configuración ajustables, según las necesidades. A nivel de interfaz de usuarios, tiene dos grandes partes, una para gestionar (borrar y cargar *corpus documental*, que actúa como base de conocimientos), y otra interfaz que usa dicho *corpus* y, en base a las instrucciones suministradas, permite interactuar con la base de conocimientos como un chatbot, similar por ejemplo a las interfaces típicas de ChatGPT o Google Gemini, permitiendo encadenar una conversación con múltiples preguntas y respuestas.
 
-![Preview](preview.png)
+El aspecto de la interfaz con la que podemos gestionar el *corpus documental* (base de conocimientos para la IA) sería este:
 
-NOTA: Este agente utiliza únicamente búsqueda semántica. Para algunos casos de uso esto funciona, pero en otros puede que también necesites una estrategia RAG más avanzada, como por ejemplo:
+ ![Preview](carga_corpus.png)
 
-1. Leer los documentos completos referenciados para evitar perder contexto  
-2. Utilizar una estrategia de búsqueda híbrida para coincidencia por palabras clave  
+ Y el aspecto de la interfaz del *chat bot* sería este:
+
+ ![Preview](chatbot.png)
+
+ El motor de IA utilizado en este ejemplo el Gemini (probado con la versión 2.5 flash, pero puede cambiarse) y el motor de API de repositorio vectorial de Google, asociado.
+
 
 ## Inicio rápido
 
 ### 1. Prerrequisitos
-- Gestor de paquetes uv  
-- Clave de API de Gemini AI  
+- Instalar entorno [Python](https://www.python.org/downloads/windows/) (3.13 o superior)
+- Clave de API de Gemini AI ([obtener aquí](https://aistudio.google.com/app/apikey))
 
 ### 2. Instalación
+Creamos entorno virtual de Python en la carpeta del proyecto e instalamos los paquetes indicados en el fichero de requerimientos:
 
 ```
-uv sync
+python -m venv .venv
+```
+Activar el entorno virtual en Windows (salvo que se use entorno de codificación como Visual Studio, por ejemplo, y se configure ahí):
+```
+.venv\Scripts\activate
+```
+A partir de ahí, ya podemos lanzar tanto el gestor del *corpus* como el *chat bot*:
+```
+streamlit run storage_handling.py
+
+streamlit run chat.py
 ```
 
 ### 3. Configuración del entorno
 
-Crea un archivo `.env` con tu clave de API:
+Crea un archivo `.env` con tu clave de API, aquí incluimos los valores dados como ejemplo inicial, pero que pueden alterarse según las necesidades:
 
 ```bash
-GEMINI_API_KEY="your-api-key-here"
-STORE_NAME="your-store-name-here"
+GEMINI_API_KEY="your-api-key-here"    #este valor debe obtenerse en google
+IA_MODEL="gemini-2.5-flash"
+STORE_NAME="convoc_investig"
+DISPLAY_NAME="BD Investigacion"
+FICH_INSTRUCCIONES_IA="ia-instructions-convoc-inv.txt"
 ```
 
-### 4. Crear el almacén de búsqueda de archivos
-
-Ejecuta el script de configuración para crear un nuevo almacén y subir documentos al mismo:
-
-```bash
-uv run setup.py
-```
-
-Esto realizará lo siguiente:
-- Creará un almacén de búsqueda de archivos  
-- Subirá todos los PDFs del directorio `docs_investigacion/`  
-- Ejecutará una consulta de ejemplo  
-- Mostrará el nombre del almacén (guárdalo para tu archivo `.env`)  
-
-### 5. Ejecutar la aplicación en local
-
-```bash
-uv run streamlit run app.py
-```
-
-La aplicación se abrirá en tu navegador en `http://localhost:8501`
-
-## Estructura del proyecto
-
-```
-03-gemini-files-api/
-├── app/
-│   ├── agent.py              # Clase FAQAgent
-│   └── services/
-│       ├── file_service.py   # Operaciones de búsqueda de archivos
-│       └── store_service.py  # Gestión del almacén
-├── docs/                     # PDFs de la base de conocimiento
-├── app.py                    # Aplicación Streamlit
-├── setup.py                  # Script de configuración para crear almacenes
-├── pyproject.toml            # Dependencias del proyecto
-```
-
-## Referencia de la API
-
-Consulta la documentación oficial de la API de búsqueda de archivos de Gemini:
-https://ai.google.dev/gemini-api/docs/file-search
+La aplicación se abrirá en ambos casos en tu navegador en `http://localhost:8501`

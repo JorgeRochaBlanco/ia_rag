@@ -1,36 +1,43 @@
 from dotenv import load_dotenv
 import os
 from pathlib import Path
-from google import genai
 import streamlit as st
 
-from app import functions
+from app.agent_investigacion import InvestigationAgent
 
 
 # Load environment variables
 load_dotenv()
 
+#instrucciones para la IA, por si hay varias disponibles
+instructions_ia = InvestigationAgent.load_instructions(os.getenv("FICH_INSTRUCCIONES_IA"))
+#tomamos variables de entorno para configurar accesos a Storage e instrucciones para agente IA
+print("Modelo IA a usar:", end="\t")
+modelo_ia = os.getenv("IA_MODEL")
+print(modelo_ia)
 print("Nombre de Storage Google: ", end="\t")
 print(os.getenv("STORE_NAME"))
 print("API Key: ", end="\t")
 print(os.getenv("GEMINI_API_KEY"))
-
-
-
-# Initialize client (requires GEMINI_API_KEY environment variable)
-repo = "BD Investigacion"
+print("Instrucciones para el agente:")
+print(instructions_ia)
+repo = os.getenv("DISPLAY_NAME")
+print("Repo display name: " + repo)
 tmp_ruta = "docs"
-client = genai.Client()
 
 
 # Controles Streamlit
 
 st.title("Limpieza y recarga de documentos al repositorio - " + repo)
 
-functions.cleanup(client)
-store = functions.create_store(client, repo)
-print("Store:")
-print(store)
+# Initialize client (requires GEMINI_API_KEY environment variable), creating new storage
+ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, ia_model=modelo_ia, create_store=True)
+
+#functions.cleanup(client)
+#store = functions.create_store(client, repo)
+#print("Store:")
+#print(store)
+
 st.write("Repositorio limpio y recreado")
 
 # Subimos ficheros al repo
@@ -50,9 +57,8 @@ for file in uploaded_files:
     with open(os.path.join(tmp_ruta, file.name), "wb") as f:
         f.write(bytes_data)  # write this content elsewhere
 
-functions.upload_documents(client, store.name, Path(tmp_ruta))  #subimos los ficheros al repo
-str_fich = functions.list_documents(client=client)
-st.write("Ficheros: " + str_fich)
+#functions.upload_documents(client, store.name, Path(tmp_ruta))  #subimos los ficheros al repo
+ia_agent.upload_documents(Path(tmp_ruta))
 # List all files in the directory
 for filename in os.listdir(tmp_ruta):
     file_path = os.path.join(tmp_ruta, filename)
