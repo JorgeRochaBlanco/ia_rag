@@ -46,12 +46,13 @@ ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, i
 # Código Streamlit
 ###################################################################
 
-st.title("Chatbot con RAG para analizar programas de ayuda a la investigación")
+st.title("Chatbot para analizar programas de ayuda a la investigación")
 
 # Botón para resetear
 st.button('Vaciar Chat', on_click=reset_conversation)
 
 # Botón para subir un ficheros y anexarlo al chat
+#str_document = None     #inicializamos vacío
 uploaded_file = st.file_uploader("Adjuntar fichero al chat")
 # escribimos a disco el fichero
 if uploaded_file: # check if path is not None
@@ -60,6 +61,7 @@ if uploaded_file: # check if path is not None
     loader = PyPDFLoader("docs/" + uploaded_file.name)
     pages = loader.load_and_split()
     str_document = "Documento adjunto:\n"
+    os.remove("docs/" + uploaded_file.name)
     for page in pages:
         str_document += page.page_content + "\n"   #cada página la separamos con un retorno de línea
     st.session_state.embedded_doc = str_document
@@ -92,7 +94,7 @@ with st.chat_message("assistant"):
         print("Query para la IA:")
         print(message_str)
         query_ia = message_str
-        if str_document:   #si hay documento adjunto, se anexa al principio de la pregunta
+        if uploaded_file:   #si hay documento adjunto, se anexa al principio de la pregunta
             query_ia = str_document + query_ia
         response = ia_agent.chat(query_ia)
         st.write(response)
