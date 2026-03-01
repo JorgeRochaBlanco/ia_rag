@@ -26,6 +26,10 @@ tmp_ruta = "docs"
 # Controles Streamlit
 
 st.title("Limpieza y recarga de documentos al repositorio - " + repo)
+st.set_page_config(
+    page_title="Limpieza y recarga de documentos al repositorio - " + repo, 
+    page_icon="resources/fiibhuilhuse.png", 
+    layout="centered")
 st.logo("resources/fiibhuilhuse.png", size="large")
 st.image("https://www.comunidad.madrid/hospital/infantaleonor/sites/infantaleonor/files/styles/image_text_25/public/2024-04/logotipo.jpg?itok=i3R_1sX6", caption="Hospital Universitario Infanta Leonor", width=400)
 
