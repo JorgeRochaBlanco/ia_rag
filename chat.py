@@ -45,6 +45,10 @@ ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, i
 ###################################################################
 
 st.title("Chatbot para analizar programas de ayuda a la investigación")
+st.set_page_config(
+    page_title="Chatbot para analizar programas de ayuda a la investigación", 
+    page_icon="resources/chatbot_favicon.png", 
+    layout="centered")
 st.logo("resources/fiibhuilhuse.png", size="large")
 
 # Botón para resetear
