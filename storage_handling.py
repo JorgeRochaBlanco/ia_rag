@@ -47,10 +47,12 @@ if upload_instructions:
     except Exception as e:
         st.write("Error al cargar instrucciones: ", e)
 new_instructions = st.text_area(
-    "Instrucciones para el agente (opcional)", 
+    "Actualizar instrucciones para el agente", 
     value=instructions_ia, 
     height=200)
 ia_agent.update_instructions(new_instructions)  #actualizamos las instrucciones del agente con el nuevo texto
+st.write("Instrucciones actualizadas para el agente:")
+st.write(new_instructions)
 
 # Subimos ficheros al repo
 uploaded_files = st.file_uploader(
