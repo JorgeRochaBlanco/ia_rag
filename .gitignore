@@ -19,3 +19,6 @@ chainlit.md
 # Directorios de documentos
 docs/
 docs_investigacion/
+
+# Streamlit config files
+.streamlit/
