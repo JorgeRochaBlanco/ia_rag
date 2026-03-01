@@ -8,7 +8,7 @@ class InvestigationAgent:
     """Minimal agent using Gemini's File Search tool."""
 
     def __init__(self, display_name: str, instructions: str, ia_model: str, create_store = False):
-        """Constructor. Neceista el display name del storage, las instrucciones de entramiento e identificar el modelo IA a usar"""
+        """Constructor. Necesita el display name del storage, las instrucciones de entramiento e identificar el modelo IA a usar"""
         self.client = genai.Client()
         self.ia_model = ia_model
         self.display_name = display_name
@@ -19,7 +19,13 @@ class InvestigationAgent:
         self.instructions = instructions or ""
 
         if not self.store.name:
-            raise ValueError("Store name required (or set STORE_NAME env var)")
+            raise ValueError("Se necesita un almacenamiento de búsqueda de archivos para usar el agente. Por favor, cree uno con el método create_store o revise el nombre del display_name.")
+        
+    
+    def update_instructions(self, new_instructions: str) -> None:
+        """Actualiza las instrucciones del agente. Útil para modificar el comportamiento del agente sin necesidad de reiniciar la aplicación"""
+        self.instructions = new_instructions
+
 
     def chat(self, query: str) -> str:
         """Query the store using Gemini with file search. No appending is done for Q&A, has to be done outside if necessary"""
@@ -33,7 +39,7 @@ class InvestigationAgent:
 
     ## Métodos auxiliares para gestionar repositorios, cargar datos de configuración, etc.
     def create_store(self, display_name_storage: str) -> genai.types.FileSearchStore:
-        """Create a file search store for organizing searchable documents."""
+        """Crea un almacenamiento de búsqueda de archivos para organizar documentos buscables."""
         store = self.client.file_search_stores.create(config={"display_name": display_name_storage})
         print(f"Almacenamiento creado: {store.name}")
         return store
@@ -81,7 +87,7 @@ class InvestigationAgent:
 
     @staticmethod
     def load_instructions(instr_file: str) -> str:
-        """Cargamos instrucciones de un fichero. En caso de error no se devuelve nada"""
+        """Cargamos instrucciones de un fichero. En caso de error no se devuelve nada. Método estático porque no depende de la instancia del agente, es simplemente una función de utilidad para cargar instrucciones desde un fichero de texto plano"""
         contenido = ''   #por defecto no se devuelven instrucciones
         try:
             with open('config/'+instr_file, 'r', encoding='utf-8') as file:

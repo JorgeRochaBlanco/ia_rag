@@ -26,10 +26,31 @@ tmp_ruta = "docs"
 # Controles Streamlit
 
 st.title("Limpieza y recarga de documentos al repositorio - " + repo)
+st.logo("resources/fiibhuilhuse.png", size="large")
+st.image("https://www.comunidad.madrid/hospital/infantaleonor/sites/infantaleonor/files/styles/image_text_25/public/2024-04/logotipo.jpg?itok=i3R_1sX6", caption="Hospital Universitario Infanta Leonor", width=400)
 
 # Initialize client (requires GEMINI_API_KEY environment variable), creating new storage
 ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, ia_model=modelo_ia, create_store=True)
 st.write("Repositorio limpio y recreado")
+
+# Pedimos instrucciones para configurar el agente
+upload_instructions = st.file_uploader(
+    label="Cargue fichero de instrucciones de base para el agente (opcional)", 
+    accept_multiple_files=False,
+    type=["txt"], 
+    key="uploadInstructions", 
+    help="Seleccione un fichero de texto plano con instrucciones para el agente")
+if upload_instructions:
+    try:
+        instructions_ia = upload_instructions.getvalue().decode("utf-8")
+        st.write("Instrucciones cargadas correctamente")
+    except Exception as e:
+        st.write("Error al cargar instrucciones: ", e)
+new_instructions = st.text_area(
+    "Instrucciones para el agente (opcional)", 
+    value=instructions_ia, 
+    height=200)
+ia_agent.update_instructions(new_instructions)  #actualizamos las instrucciones del agente con el nuevo texto
 
 # Subimos ficheros al repo
 uploaded_files = st.file_uploader(
