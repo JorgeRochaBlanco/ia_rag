@@ -6,11 +6,11 @@ Este proyecto demuestra cómo construir un agente RAG (Generación Aumentada por
 
 El aspecto de la interfaz con la que podemos gestionar el *corpus documental* (base de conocimientos para la IA) sería este:
 
- ![Preview](carga_corpus.png)
+ ![Preview](resources/carga_corpus.png)
 
  Y el aspecto de la interfaz del *chat bot* sería este:
 
- ![Preview](chatbot.png)
+ ![Preview](resources/chatbot.png)
 
  El motor de IA utilizado en este ejemplo el Gemini (probado con la versión 2.5 flash, pero puede cambiarse) y el motor de API de repositorio vectorial de Google, asociado.
 

@@ -20,25 +20,6 @@ def get_txt_messages(messages):
 
 
 ################################################################
-# Secretos a través de varialbes de entorno con dotenv
-# Load environment variables
-# load_dotenv()
-# #instrucciones para la IA, por si hay varias disponibles
-# instructions_ia = InvestigationAgent.load_instructions(os.getenv("FICH_INSTRUCCIONES_IA"))
-# #tomamos variables de entorno para configurar accesos a Storage e instrucciones para agente IA
-# print("Modelo IA a usar:", end="\t")
-# modelo_ia = os.getenv("IA_MODEL")
-# print(modelo_ia)
-# print("Nombre de Storage Google: ", end="\t")
-# print(os.getenv("STORE_NAME"))
-# print("API Key: ", end="\t")
-# print(os.getenv("GEMINI_API_KEY"))
-# print("Instrucciones para el agente:")
-# print(instructions_ia)
-# repo = os.getenv("DISPLAY_NAME")
-# print("Repo display name: " + repo)
-
-################################################################
 # Secretos a través de streamlit secrets
 instructions_ia = InvestigationAgent.load_instructions(st.secrets["FICH_INSTRUCCIONES_IA"])
 print("Modelo IA a usar:", end="\t")
@@ -64,6 +45,7 @@ ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, i
 ###################################################################
 
 st.title("Chatbot para analizar programas de ayuda a la investigación")
+st.logo("resources/fiibhuilhuse.png", size="medium")
 
 # Botón para resetear
 st.button('Vaciar Chat', on_click=reset_conversation)
