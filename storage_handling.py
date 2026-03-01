@@ -55,8 +55,9 @@ new_instructions = st.text_area(
     value=instructions_ia, 
     height=200)
 ia_agent.update_instructions(new_instructions)  #actualizamos las instrucciones del agente con el nuevo texto
-st.write("Instrucciones actualizadas para el agente:")
-st.markdown(new_instructions)
+if new_instructions != instructions_ia:
+    st.write("Instrucciones actualizadas para el agente:")
+    st.markdown(new_instructions)
 
 # Subimos ficheros al repo
 uploaded_files = st.file_uploader(
