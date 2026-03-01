@@ -6,6 +6,8 @@ from langchain_community.document_loaders import PyPDFLoader
 from app.agent_investigacion import InvestigationAgent
 
 
+##############################################################
+# Funciones auxiliares
 # Función para resetear el chat
 def reset_conversation():
   st.session_state.conversation = None
@@ -17,23 +19,38 @@ def get_txt_messages(messages):
     return "\n".join([item["role"]+": "+(item["content"] if item["content"] else "")+"\n" for item in messages])
 
 
-
+################################################################
+# Secretos a través de varialbes de entorno con dotenv
 # Load environment variables
-load_dotenv()
+# load_dotenv()
+# #instrucciones para la IA, por si hay varias disponibles
+# instructions_ia = InvestigationAgent.load_instructions(os.getenv("FICH_INSTRUCCIONES_IA"))
+# #tomamos variables de entorno para configurar accesos a Storage e instrucciones para agente IA
+# print("Modelo IA a usar:", end="\t")
+# modelo_ia = os.getenv("IA_MODEL")
+# print(modelo_ia)
+# print("Nombre de Storage Google: ", end="\t")
+# print(os.getenv("STORE_NAME"))
+# print("API Key: ", end="\t")
+# print(os.getenv("GEMINI_API_KEY"))
+# print("Instrucciones para el agente:")
+# print(instructions_ia)
+# repo = os.getenv("DISPLAY_NAME")
+# print("Repo display name: " + repo)
 
-#instrucciones para la IA, por si hay varias disponibles
-instructions_ia = InvestigationAgent.load_instructions(os.getenv("FICH_INSTRUCCIONES_IA"))
-#tomamos variables de entorno para configurar accesos a Storage e instrucciones para agente IA
+################################################################
+# Secretos a través de streamlit secrets
+instructions_ia = InvestigationAgent.load_instructions(st.secrets["FICH_INSTRUCCIONES_IA"])
 print("Modelo IA a usar:", end="\t")
-modelo_ia = os.getenv("IA_MODEL")
+modelo_ia = st.secrets["IA_MODEL"]
 print(modelo_ia)
 print("Nombre de Storage Google: ", end="\t")
-print(os.getenv("STORE_NAME"))
+print(st.secrets["STORE_NAME"])
 print("API Key: ", end="\t")
-print(os.getenv("GEMINI_API_KEY"))
+print(st.secrets["GEMINI_API_KEY"])
 print("Instrucciones para el agente:")
 print(instructions_ia)
-repo = os.getenv("DISPLAY_NAME")
+repo = st.secrets["DISPLAY_NAME"]
 print("Repo display name: " + repo)
 
 
@@ -43,7 +60,7 @@ ia_agent = InvestigationAgent(display_name=repo, instructions=instructions_ia, i
 
 
 ###################################################################
-# Código Streamlit
+# Código visual Streamlit
 ###################################################################
 
 st.title("Chatbot para analizar programas de ayuda a la investigación")
