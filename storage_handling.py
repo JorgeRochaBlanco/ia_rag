@@ -26,6 +26,10 @@ tmp_ruta = "docs"
 # Controles Streamlit
 
 st.title("Limpieza y recarga de documentos al repositorio - " + repo)
+st.set_page_config(
+    page_title="Limpieza y recarga de documentos al repositorio - " + repo, 
+    page_icon="resources/fiibhuilhuse.png", 
+    layout="centered")
 st.logo("resources/fiibhuilhuse.png", size="large")
 st.image("https://www.comunidad.madrid/hospital/infantaleonor/sites/infantaleonor/files/styles/image_text_25/public/2024-04/logotipo.jpg?itok=i3R_1sX6", caption="Hospital Universitario Infanta Leonor", width=400)
 
@@ -47,10 +51,13 @@ if upload_instructions:
     except Exception as e:
         st.write("Error al cargar instrucciones: ", e)
 new_instructions = st.text_area(
-    "Instrucciones para el agente (opcional)", 
+    "Actualizar instrucciones para el agente", 
     value=instructions_ia, 
     height=200)
 ia_agent.update_instructions(new_instructions)  #actualizamos las instrucciones del agente con el nuevo texto
+if new_instructions != instructions_ia:
+    st.write("Instrucciones actualizadas para el agente:")
+    st.markdown(new_instructions)
 
 # Subimos ficheros al repo
 uploaded_files = st.file_uploader(
